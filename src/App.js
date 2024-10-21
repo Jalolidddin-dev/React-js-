@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import "./App.css";
+import { useEffect, useState } from "react";
+import { ListGroup } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Counter from "./Counter";
+
+const API = "https://jsonplaceholder.typicode.com/users";
 
 function App() {
+  const [users, setUsers] = useState([]);
+
+  const getUserAll = () => {
+    axios
+      .get(API)
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getUserAll();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {users.map((user) => (
+        <ListGroup key={user.id}>
+          <ListGroup.Item className="bg-dark text-light mt-2">
+            {user.name}
+          </ListGroup.Item>
+        </ListGroup>
+      ))}
+
+      <Counter />
     </div>
   );
 }
